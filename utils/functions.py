@@ -100,6 +100,6 @@ async def check_actual_subscriptions(session: AsyncSession):
             result = await voice_manager.update_voice_status(voice.user_id, False, voice.part_id)
             print(result)
             await bot.send_message(chat_id=int(user_id),
-                text="Siz kanallardan waz keshkensiz, sol sebepli sizdiń dawısıńız biykar etildi.\n\n"
-                     "Dawısıńızdı qayta tiklew ushın /start ni jumısqa tusiriń, kanallarǵa jazılıw bolıń, "
-                     "'Agza boldım' tuymesin basıw arqalı jazılıw bolǵanıńızdı tastıyıqlang")
+                text="Сиз каналлардан ўаз кешкенсыз, сол себеплы сиздың даўысыңыз бийкар етилды.\n\n"
+                     "Даўысыңызды қайта тиклеў ушын /start ни жумысқа тусырың, каналларға жазылыў болың, "
+                     "'Агза болдым' туймесын басыў арқалы жазылыў болғаныңызды тастыйықланг")

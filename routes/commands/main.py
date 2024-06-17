@@ -32,23 +32,23 @@ async def start_handler(message: Message, session: AsyncSession):
             print(user_voice)
             if user_voice:
                 message_text = (
-                    f'Assalamu aleykum {message.from_user.full_name}, Siz dawis bergensiz aldin!!!\n\n'
-                    f'Tuman: {user_voice["district_name"]}\n'
-                    f'Maxalle: {user_voice["street_name"]}\n'
-                    f'Bolim: {user_voice["part_name"]}\n'
+                    f'Ассаламу алейкум {message.from_user.full_name}, Сиз даўыс бергенсыз алдын!!!\n\n'
+                    f'Туман: {user_voice["district_name"]}\n'
+                    f'Mәҳәлле: {user_voice["street_name"]}\n'
+                    f'Болым: {user_voice["part_name"]}\n'
                 )
                 await message.answer(message_text)
             else:
                 text = (
-                    f"Assalamu aleykum {message.from_user.full_name}!!!\n\nMaxallelerge dawıs beriw botina xosh kelibsiz"
+                    f"Ассаламу алейкум {message.from_user.full_name}!!!\n\nMәҳәллелерге даўыс бериў ботина хош келипсыз"
                     f"\n\n{active_part.name}")
                 await message.answer(text=text)
-                await message.answer(text='Tumandi táńlań:', reply_markup=await show_district_inlines(session))
+                await message.answer(text='Туманды тәңлаң:', reply_markup=await show_district_inlines(session))
         else:
             await message.answer(text=NOT_SUB_MESSAGE, reply_markup=show_channel_inlines())
     else:
-        await message.answer(text=f'Assalamu aleykum {message.from_user.full_name}!!!'
-                                  '\n\nMaxallelerge dawıs beriw toqtatildi')
+        await message.answer(text=f'Ассаламу алейкум {message.from_user.full_name}!!!'
+                                  '\n\nMәҳәллелерге даўыс бериў тоқтатылды')
 
 
 @router.callback_query(F.data == 'subscription_done')
@@ -59,16 +59,16 @@ async def subscription_done_handler(callback: CallbackQuery, session: AsyncSessi
         if user_voice and user_voice["is_active"] is False:
             await user_voice_activate(str(callback.from_user.id), session)
             message_text = (
-                f'Dawısıńız tiklendi!!!\n\n'
-                f'Tuman: {user_voice["district_name"]}\n'
-                f'Maxalle: {user_voice["street_name"]}\n'
-                f'Bolim: {user_voice["part_name"]}\n'
+                f'Даўысыңыз тикленди!!!\n\n'
+                f'Туман: {user_voice["district_name"]}\n'
+                f'Mәҳәлле: {user_voice["street_name"]}\n'
+                f'Болым: {user_voice["part_name"]}\n'
             )
             await callback.message.answer(message_text)
         else:
-            await callback.message.answer(text='Tumandi táńlań:', reply_markup=await show_district_inlines(session))
+            await callback.message.answer(text='Туманды тәңлаң:', reply_markup=await show_district_inlines(session))
     else:
-        text = NOT_SUB_MESSAGE + '\n\n Qaytadan tekserin`!!!'
+        text = NOT_SUB_MESSAGE + '\n\n Қайтадан тексериң!!!'
         await callback.message.answer(text=text)
 
 
@@ -76,7 +76,7 @@ async def subscription_done_handler(callback: CallbackQuery, session: AsyncSessi
 async def district_handler(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
     district_id = callback.data.split('/')[-1]
     await state.set_state(Form.selected_street)
-    await callback.message.answer(text='Maxalleni táńlań:',
+    await callback.message.answer(text='Mәҳәллены тәңлаң:',
                                   reply_markup=await show_street_inlines(session, district_id))
 
 
@@ -89,11 +89,11 @@ async def street_handler(callback: CallbackQuery, state: FSMContext, session: As
         await state.update_data(selected_street={"id": selected_street.id, "name": selected_street.name})
         data = await state.get_data()
         await callback.message.answer(
-            text=f"\n\nTanlagan maxalle: {data['selected_street']['name']}",
+            text=f"\n\nТанлаган Mәҳәлле: {data['selected_street']['name']}",
             reply_markup=confirm_voice_keyboard()
         )
     except Exception as e:
-        await callback.message.answer(text=f"Error occurred: {str(e)}")
+        await callback.message.answer(text=f"Кәте: {str(e)}")
     finally:
         await session.close()
 
@@ -109,10 +109,10 @@ async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, 
         user_voice = await voice_manager.get_voice_by_user_id(str(callback.from_user.id), active_part.id)
         if user_voice:
             message_text = (
-                'Siz dawis bergensiz aldin!!!\n\n'
-                f'Tuman: {user_voice["district_name"]}\n'
-                f'Maxalle: {user_voice["street_name"]}\n'
-                f'Bolim: {user_voice["part_name"]}\n'
+                'Сиз даўыс бергенсыз алдын!!!\n\n'
+                f'Туман: {user_voice["district_name"]}\n'
+                f'Mәҳәлле: {user_voice["street_name"]}\n'
+                f'Болым: {user_voice["part_name"]}\n'
             )
             await callback.message.answer(message_text)
         else:
@@ -122,26 +122,26 @@ async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, 
                                                    active_part.id)
                 user_voice = await voice_manager.get_voice_by_user_id(str(callback.from_user.id), active_part.id)
                 statistic = await voice_manager.get_voice_statistics(str(callback.from_user.id), active_part.id)
-                await callback.message.answer(f"{callback.from_user.full_name}, Dawis bergen ushun rahmet!!!\n\n"
-                                            f'Tuman: {user_voice["district_name"]} ({statistic["district_rank"]} orin)\n'
-                                            f'Maxalle: {user_voice["street_name"]} ({statistic["street_rank"]} orin)\n'
-                                            f'Bolim: {user_voice["part_name"]}\n')
+                await callback.message.answer(f"{callback.from_user.full_name}, Даўис берген ушун раҳмет!!!\n\n"
+                                            f'Туман: {user_voice["district_name"]} ({statistic["district_rank"]} орын)\n'
+                                            f'Mәҳәлле: {user_voice["street_name"]} ({statistic["street_rank"]} орын)\n'
+                                            f'Болым: {user_voice["part_name"]}\n')
             except Exception as e:
                 print(e)
     else:
-        await callback.answer(text='Maxalleni tanlań!!!', show_alert=True)
+        await callback.answer(text='Mәҳәллены тәңлаң!!!', show_alert=True)
 
 
 @router.callback_query(F.data == 'cancel_voice')
 async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
     await state.clear()
-    await callback.message.answer(text='Tumandi táńlań:', reply_markup=await show_district_inlines(session))
+    await callback.message.answer(text='Туманды тәңлаң:', reply_markup=await show_district_inlines(session))
 
 
 @router.callback_query(F.data == 'back_from_street')
 async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
     await state.clear()
-    await callback.message.answer(text='Tumandi táńlań:', reply_markup=await show_district_inlines(session))
+    await callback.message.answer(text='Туманды тәңлаң:', reply_markup=await show_district_inlines(session))
 
 
 @router.message(Command('dawis_tekseriw'))
@@ -151,7 +151,7 @@ async def check_sub(message: Message, session: AsyncSession):
     if is_admin_status:
         await check_actual_subscriptions(session)
     else:
-        await message.answer("Bunday komanda joq")
+        await message.answer("Бундай команда жоқ")
 
 
 @router.message(Command('statistika'))
@@ -161,14 +161,14 @@ async def check_sub(message: Message, session: AsyncSession):
     if is_admin_status:
         await message.answer(text="Статистика:", reply_markup=await show_district_statistic_inlines(session))
     else:
-        await message.answer("Bunday komanda joq")
+        await message.answer("Бундай команда жоқ")
 
 
 @router.callback_query(F.data.startswith('stat_district/'))
 async def district_handler(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
     district_id = callback.data.split('/')[-1]
     await state.set_state(Form.selected_street)
-    await callback.message.answer(text='Statistika:',
+    await callback.message.answer(text='Статистика:',
                                   reply_markup=await show_street_statistic_inlines(session, int(district_id)))
 
 

@@ -10,7 +10,7 @@ def show_channel_inlines():
     for channel in channels:
         btns.append([InlineKeyboardButton(text=channel['name'], url=channel['url'])])
     
-    btnDoneSubscription = [InlineKeyboardButton(text='Agza boldim', callback_data='subscription_done')]
+    btnDoneSubscription = [InlineKeyboardButton(text='Агза болдым', callback_data='subscription_done')]
     btns.append(btnDoneSubscription)
 
     ikb = InlineKeyboardMarkup(inline_keyboard=btns)
@@ -52,7 +52,7 @@ async def show_street_inlines(session: AsyncSession, district_id):
                     InlineKeyboardButton(text=streets[i + 1].name, callback_data=f"street/{streets[i + 1].id}"))
             btns.append(row)
 
-        btns.append([InlineKeyboardButton(text='⬅️⬅️ Qaytıw', callback_data=f"back_from_street")])
+        btns.append([InlineKeyboardButton(text='⬅️⬅️ Қайтыў', callback_data=f"back_from_street")])
         ikb = InlineKeyboardMarkup(inline_keyboard=btns)
         return ikb
     except Exception as e:
@@ -62,8 +62,8 @@ async def show_street_inlines(session: AsyncSession, district_id):
 def confirm_voice_keyboard():
     voice_keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="Dawis beruw", callback_data="confirm_voice"),
-             InlineKeyboardButton(text="Biykarlaw", callback_data="cancel_voice")]
+            [InlineKeyboardButton(text="Даўыс беруў", callback_data="confirm_voice"),
+             InlineKeyboardButton(text="Бийкарлаў", callback_data="cancel_voice")]
         ]
     )
 
