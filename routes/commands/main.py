@@ -36,22 +36,22 @@ async def start_handler(message: Message, session: AsyncSession):
             print(user_voice)
             if user_voice:
                 message_text = (
-                    f'Ассаламу алейкум {message.from_user.full_name}, Сиз даўыс бергенсыз алдын!!!\n\n'
-                    f'Туман: {user_voice["district_name"]}\n'
+                    f'Ассалаўма әлейкум {message.from_user.full_name}, Сиз даўыс бергенсыз алдын!!!\n\n'
+                    f'Район: {user_voice["district_name"]}\n'
                     f'Mәҳәлле: {user_voice["street_name"]}\n'
                     f'Болым: {user_voice["part_name"]}\n'
                 )
                 await message.answer(message_text)
             else:
                 text = (
-                    f"Ассаламу алейкум {message.from_user.full_name}!!!\n\nMәҳәллелерге даўыс бериў ботина хош келипсыз"
+                    f"Ассалаўма әлейкум {message.from_user.full_name}!!!\n\nЕң белсенди “Мәҳәлле жетилиги”не даўыс бериў ботына хош келипсиз!"
                     f"\n\n{active_part.name}")
                 await message.answer(text=text)
-                await message.answer(text='Туманды тәңлаң:', reply_markup=await show_district_inlines(session))
+                await message.answer(text='Районды сайлаң:', reply_markup=await show_district_inlines(session))
         else:
             await message.answer(text=NOT_SUB_MESSAGE, reply_markup=show_channel_inlines())
     else:
-        await message.answer(text=f'Ассаламу алейкум {message.from_user.full_name}!!!'
+        await message.answer(text=f'Ассалаўма әлейкум {message.from_user.full_name}!!!'
                                   '\n\nMәҳәллелерге даўыс бериў тоқтатылды')
 
 
@@ -64,13 +64,13 @@ async def subscription_done_handler(callback: CallbackQuery, session: AsyncSessi
             await user_voice_activate(str(callback.from_user.id), session)
             message_text = (
                 f'Даўысыңыз тикленди!!!\n\n'
-                f'Туман: {user_voice["district_name"]}\n'
+                f'Район: {user_voice["district_name"]}\n'
                 f'Mәҳәлле: {user_voice["street_name"]}\n'
                 f'Болым: {user_voice["part_name"]}\n'
             )
             await callback.message.answer(message_text)
         else:
-            await callback.message.answer(text='Туманды тәңлаң:', reply_markup=await show_district_inlines(session))
+            await callback.message.answer(text='Районды сайлаң:', reply_markup=await show_district_inlines(session))
     else:
         text = NOT_SUB_MESSAGE + '\n\n Қайтадан тексериң!!!'
         await callback.message.answer(text=text)
@@ -93,7 +93,7 @@ async def street_handler(callback: CallbackQuery, state: FSMContext, session: As
         await state.update_data(selected_street={"id": selected_street.id, "name": selected_street.name})
         data = await state.get_data()
         await callback.message.answer(
-            text=f"\n\nТанлаган Mәҳәлле: {data['selected_street']['name']}",
+            text=f"\n\nСайлаған мәҳәллеңиз:: {data['selected_street']['name']}",
             reply_markup=confirm_voice_keyboard()
         )
     except Exception as e:
@@ -114,7 +114,7 @@ async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, 
         if user_voice:
             message_text = (
                 'Сиз даўыс бергенсыз алдын!!!\n\n'
-                f'Туман: {user_voice["district_name"]}\n'
+                f'Район: {user_voice["district_name"]}\n'
                 f'Mәҳәлле: {user_voice["street_name"]}\n'
                 f'Болым: {user_voice["part_name"]}\n'
             )
@@ -127,7 +127,7 @@ async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, 
                 user_voice = await voice_manager.get_voice_by_user_id(str(callback.from_user.id), active_part.id)
                 statistic = await voice_manager.get_voice_statistics(str(callback.from_user.id), active_part.id)
                 await callback.message.answer(f"{callback.from_user.full_name}, Даўис берген ушун раҳмет!!!\n\n"
-                                            f'Туман: {user_voice["district_name"]} ({statistic["district_rank"]} орын)\n'
+                                            f'Район: {user_voice["district_name"]} ({statistic["district_rank"]} орын)\n'
                                             f'Mәҳәлле: {user_voice["street_name"]} ({statistic["street_rank"]} орын)\n'
                                             f'Болым: {user_voice["part_name"]}\n')
             except Exception as e:
@@ -139,13 +139,13 @@ async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, 
 @router.callback_query(F.data == 'cancel_voice')
 async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
     await state.clear()
-    await callback.message.answer(text='Туманды тәңлаң:', reply_markup=await show_district_inlines(session))
+    await callback.message.answer(text='Районды сайлаң:', reply_markup=await show_district_inlines(session))
 
 
 @router.callback_query(F.data == 'back_from_street')
 async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
     await state.clear()
-    await callback.message.answer(text='Туманды тәңлаң:', reply_markup=await show_district_inlines(session))
+    await callback.message.answer(text='Районды сайлаң:', reply_markup=await show_district_inlines(session))
 
 
 @router.message(Command('dawis_tekseriw'))
