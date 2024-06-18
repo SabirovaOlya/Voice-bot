@@ -21,6 +21,10 @@ class Form(StatesGroup):
     phone_number = State()
 
 
+class AdminForm(StatesGroup):
+    username = State()
+
+
 @router.message(CommandStart())
 async def start_handler(message: Message, session: AsyncSession):
     part_manager = PartManager(session)
@@ -170,6 +174,43 @@ async def district_handler(callback: CallbackQuery, state: FSMContext, session: 
     await state.set_state(Form.selected_street)
     await callback.message.answer(text='Статистика:',
                                   reply_markup=await show_street_statistic_inlines(session, int(district_id)))
+
+
+@router.message(Command('change_role'))
+async def make_admin(message: Message, state: FSMContext, session: AsyncSession):
+    user_manager = UserManager(session)
+    is_admin_status = await user_manager.is_admin(str(message.from_user.id))
+    if is_admin_status:
+        await state.set_state(AdminForm.username)
+        await message.answer(text="Username киритынг:")
+    else:
+        await message.answer("Бундай команда жоқ")
+
+
+@router.message(AdminForm.username)
+async def make_admin(message: Message, state: FSMContext, session: AsyncSession):
+    user_manager = UserManager(session)
+    is_admin_status = await user_manager.is_admin(str(message.from_user.id))
+    if is_admin_status:
+        await state.update_data(username=message.text)
+        user = await user_manager.get_user_by_username(message.text)
+        if user:
+            if user.role.value == 'admin':
+                updated_user = await user_manager.update_user_role(user.user_id, 'user')
+                if updated_user:
+                    await message.answer('Роль пайдалануйшыга озгерди')
+                else:
+                    await message.answer('Кәте шикты')
+            else:
+                updated_user = await user_manager.update_user_role(user.user_id, 'admin')
+                if updated_user:
+                    await message.answer('Роль админга озгерди')
+                else:
+                    await message.answer('Кәте шикты')
+        else:
+            await message.answer("Бундай пайдалануйшы таулмады")
+    else:
+        await message.answer("Бундай команда жоқ")
 
 
 # @router.message(F.content_type == 'contact')

@@ -43,9 +43,22 @@ class UserManager:
         result = await self.session.execute(select(User).filter(User.user_id == user_id))
         return result.scalar_one_or_none()
 
+    async def get_user_by_username(self, username: str) -> User:
+        result = await self.session.execute(select(User).filter(User.username == username))
+        return result.scalar_one_or_none()
+
     async def update_user_username(self, user_id: str, new_username: str) -> User:
-        user = await self.session.execute(select(User).filter(User.user_id == user_id)).scalar_one()
+        result = await (self.session.execute(select(User).filter(User.user_id == user_id)))
+        user = result.scalar_one()
         user.username = new_username
+        await self.session.commit()
+        await self.session.refresh(user)
+        return user
+
+    async def update_user_role(self, user_id: str, role: str) -> User:
+        result = await self.session.execute(select(User).filter(User.user_id == user_id))
+        user = result.scalar_one()
+        user.role = role
         await self.session.commit()
         await self.session.refresh(user)
         return user
