@@ -84,7 +84,7 @@ async def show_district_statistic_inlines(session: AsyncSession):
                                             callback_data=f"stat_district/{districts[i]['district_id']}"))
             if i + 1 < len(districts):
                 row.append(
-                    InlineKeyboardButton(text=f'{districts[i]["rank"]}. {districts[i]["district_name"]} - {districts[i]["voice_count"]}',
+                    InlineKeyboardButton(text=f'{districts[i + 1]["rank"]}. {districts[i + 1]["district_name"]} - {districts[i + 1]["voice_count"]}',
                     callback_data=f"stat_district/{districts[i + 1]['district_id']}")
                 )
             btns.append(row)
@@ -110,7 +110,7 @@ async def show_street_statistic_inlines(session: AsyncSession, district_id: int)
                                             callback_data=f"111"))
             if i + 1 < len(streets):
                 row.append(
-                    InlineKeyboardButton(text=f'{streets[i]["rank"]}. {streets[i]["street_name"]} - {streets[i]["voice_count"]}',
+                    InlineKeyboardButton(text=f'{streets[i + 1]["rank"]}. {streets[i + 1]["street_name"]} - {streets[i + 1]["voice_count"]}',
                     callback_data=f"111")
                 )
             btns.append(row)
