@@ -27,6 +27,7 @@ class AdminForm(StatesGroup):
 
 @router.message(CommandStart())
 async def start_handler(message: Message, session: AsyncSession):
+    voice_manager = VoiceManager(session)
     part_manager = PartManager(session)
     active_part = await part_manager.get_available_parts()
     if active_part:
@@ -35,11 +36,13 @@ async def start_handler(message: Message, session: AsyncSession):
             print(str(message.from_user.id), 'start\n\n')
             print(user_voice)
             if user_voice:
+                statistic = await voice_manager.get_voice_statistics(str(message.from_user.id), active_part.id)
+
                 message_text = (
-                    f'Ассалаўма әлейкум {message.from_user.full_name}, Сиз даўыс бергенсыз алдын!!!\n\n'
-                    f'Район: {user_voice["district_name"]}\n'
-                    f'Mәҳәлле: {user_voice["street_name"]}\n'
-                    f'Болым: {user_voice["part_name"]}\n'
+                    f'Ассалаўма әлейкум {message.from_user.full_name}, Сиз алдын даўыс бердиңиз!!!\n\n'
+                    f'Район: {user_voice["district_name"]} ({statistic["district_rank"]} орын)\n'
+                    f'Mәҳәлле: {user_voice["street_name"]} ({statistic["street_rank"]} орын)\n'
+                    f'Бөлим: {user_voice["part_name"]}\n'
                 )
                 await message.answer(message_text)
             else:
@@ -66,7 +69,7 @@ async def subscription_done_handler(callback: CallbackQuery, session: AsyncSessi
                 f'Даўысыңыз тикленди!!!\n\n'
                 f'Район: {user_voice["district_name"]}\n'
                 f'Mәҳәлле: {user_voice["street_name"]}\n'
-                f'Болым: {user_voice["part_name"]}\n'
+                f'Бөлим: {user_voice["part_name"]}\n'
             )
             await callback.message.answer(message_text)
         else:
@@ -113,10 +116,10 @@ async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, 
         user_voice = await voice_manager.get_voice_by_user_id(str(callback.from_user.id), active_part.id)
         if user_voice:
             message_text = (
-                'Сиз даўыс бергенсыз алдын!!!\n\n'
+                'Сиз алдын даўыс бердиңиз!!!\n\n'
                 f'Район: {user_voice["district_name"]}\n'
                 f'Mәҳәлле: {user_voice["street_name"]}\n'
-                f'Болым: {user_voice["part_name"]}\n'
+                f'Бөлим: {user_voice["part_name"]}\n'
             )
             await callback.message.answer(message_text)
         else:
@@ -126,10 +129,10 @@ async def subscription_done_handler(callback: CallbackQuery, state: FSMContext, 
                                                    active_part.id)
                 user_voice = await voice_manager.get_voice_by_user_id(str(callback.from_user.id), active_part.id)
                 statistic = await voice_manager.get_voice_statistics(str(callback.from_user.id), active_part.id)
-                await callback.message.answer(f"{callback.from_user.full_name}, Даўис берген ушун раҳмет!!!\n\n"
+                await callback.message.answer(f"{callback.from_user.full_name}, Даўыс бергениңиз ушын рахмет!!!\n\n"
                                             f'Район: {user_voice["district_name"]} ({statistic["district_rank"]} орын)\n'
                                             f'Mәҳәлле: {user_voice["street_name"]} ({statistic["street_rank"]} орын)\n'
-                                            f'Болым: {user_voice["part_name"]}\n')
+                                            f'Бөлим: {user_voice["part_name"]}\n')
             except Exception as e:
                 print(e)
     else:

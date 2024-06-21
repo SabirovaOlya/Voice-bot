@@ -62,7 +62,7 @@ async def show_street_inlines(session: AsyncSession, district_id):
 def confirm_voice_keyboard():
     voice_keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="Даўыс беруў", callback_data="confirm_voice"),
+            [InlineKeyboardButton(text="Даўыс бериў", callback_data="confirm_voice"),
              InlineKeyboardButton(text="Бийкарлаў", callback_data="cancel_voice")]
         ]
     )
