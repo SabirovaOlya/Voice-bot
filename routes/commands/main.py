@@ -43,7 +43,7 @@ async def start_handler(message: Message, session: AsyncSession):
                     f'Район: {user_voice["district_name"]} ({statistic["district_rank"]} орын)\n'
                     f'Mәҳәлле: {user_voice["street_name"]} ({statistic["street_rank"]} орын)\n'
                     f'Бөлим: {user_voice["part_name"]}\n'
-                )
+               )
                 await message.answer(message_text)
             else:
                 text = (
