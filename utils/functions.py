@@ -103,3 +103,11 @@ async def check_actual_subscriptions(session: AsyncSession):
                 text="Сиз каналлардан ўаз кешкенсыз, сол себеплы сиздың даўысыңыз бийкар етилды.\n\n"
                      "Даўысыңызды қайта тиклеў ушын /start ни жумысқа тусырың, каналларға жазылыў болың, "
                      "'Агза болдым' туймесын басыў арқалы жазылыў болғаныңызды тастыйықланг")
+
+
+def cutting_district_end(name: str):
+    if 'районы' in name:
+        new_name = name.replace(' районы', '')
+        return new_name
+    return name
+

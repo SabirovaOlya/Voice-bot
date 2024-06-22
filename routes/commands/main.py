@@ -166,7 +166,7 @@ async def check_sub(message: Message, session: AsyncSession):
     user_manager = UserManager(session)
     is_admin_status = await user_manager.is_admin(str(message.from_user.id))
     if is_admin_status:
-        await message.answer(text="Статистика:", reply_markup=await show_district_statistic_inlines(session))
+        await message.answer(text="Статистика (район):", reply_markup=await show_district_statistic_inlines(session))
     else:
         await message.answer("Бундай команда жоқ")
 
@@ -175,7 +175,7 @@ async def check_sub(message: Message, session: AsyncSession):
 async def district_handler(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
     district_id = callback.data.split('/')[-1]
     await state.set_state(Form.selected_street)
-    await callback.message.answer(text='Статистика:',
+    await callback.message.answer(text='Статистика (мәҳәлле):',
                                   reply_markup=await show_street_statistic_inlines(session, int(district_id)))
 
 

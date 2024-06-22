@@ -2,6 +2,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardMarkup
 from aiogram.types import InlineKeyboardButton
 from utils.data import channels
 from database.functions import DistrictManager, StreetManager, VoiceManager, PartManager
+from utils.functions import cutting_district_end
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -80,11 +81,11 @@ async def show_district_statistic_inlines(session: AsyncSession):
         btns = []
         for i in range(0, len(districts), 2):
             row = []
-            row.append(InlineKeyboardButton(text=f'{districts[i]["rank"]}. {districts[i]["district_name"]} - {districts[i]["voice_count"]}',
+            row.append(InlineKeyboardButton(text=f'{districts[i]["rank"]}. {cutting_district_end(districts[i]["district_name"])} - {districts[i]["voice_count"]}',
                                             callback_data=f"stat_district/{districts[i]['district_id']}"))
             if i + 1 < len(districts):
                 row.append(
-                    InlineKeyboardButton(text=f'{districts[i + 1]["rank"]}. {districts[i + 1]["district_name"]} - {districts[i + 1]["voice_count"]}',
+                    InlineKeyboardButton(text=f'{districts[i + 1]["rank"]}. {cutting_district_end(districts[i + 1]["district_name"])} - {districts[i + 1]["voice_count"]}',
                     callback_data=f"stat_district/{districts[i + 1]['district_id']}")
                 )
             btns.append(row)
@@ -104,15 +105,10 @@ async def show_street_statistic_inlines(session: AsyncSession, district_id: int)
         streets = await voice_manager.get_street_statistics(active_part.id, district_id)
 
         btns = []
-        for i in range(0, len(streets), 2):
+        for i in range(0, len(streets)):
             row = []
             row.append(InlineKeyboardButton(text=f'{streets[i]["rank"]}. {streets[i]["street_name"]} - {streets[i]["voice_count"]}',
                                             callback_data=f"111"))
-            if i + 1 < len(streets):
-                row.append(
-                    InlineKeyboardButton(text=f'{streets[i + 1]["rank"]}. {streets[i + 1]["street_name"]} - {streets[i + 1]["voice_count"]}',
-                    callback_data=f"111")
-                )
             btns.append(row)
 
         ikb = InlineKeyboardMarkup(inline_keyboard=btns)
