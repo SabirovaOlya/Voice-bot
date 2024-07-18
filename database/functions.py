@@ -84,8 +84,9 @@ class DistrictManager:
         return district
 
     async def get_district_by_id(self, district_id: int) -> District:
-        return await self.session.execute(select(District).filter(District.id == district_id)).scalar_one_or_none()
-
+        result = await self.session.execute(select(District).filter(District.id == district_id))
+        return result.scalar_one_or_none()
+        
     async def get_all_districts(self) -> List[District]:
         result = await self.session.execute(
             select(District)
