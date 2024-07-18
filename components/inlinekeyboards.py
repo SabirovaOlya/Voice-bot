@@ -72,22 +72,31 @@ def confirm_voice_keyboard():
     return voice_keyboard
 
 
-async def show_district_statistic_inlines(session: AsyncSession):
+def statistics_part_select():
+    voice_keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Бөлим - 1", callback_data="stat_part/1"),
+             InlineKeyboardButton(text="Бөлим - 2", callback_data="stat_part/2")]
+        ]
+    )
+
+    return voice_keyboard
+
+
+async def show_district_statistic_inlines(session: AsyncSession, part_id: str):
     try:
-        part_manager = PartManager(session)
-        active_part = await part_manager.get_available_parts()
         voice_manager = VoiceManager(session)
-        districts = await voice_manager.get_district_statistics(active_part.id)
+        districts = await voice_manager.get_district_statistics(int(part_id))
 
         btns = []
         for i in range(0, len(districts), 2):
             row = []
             row.append(InlineKeyboardButton(text=f'{districts[i]["rank"]}. {cutting_district_end(districts[i]["district_name"])} - {districts[i]["voice_count"]}',
-                                            callback_data=f"stat_district/{districts[i]['district_id']}"))
+                                            callback_data=f"stat_district/{int(part_id)}&{districts[i]['district_id']}"))
             if i + 1 < len(districts):
                 row.append(
                     InlineKeyboardButton(text=f'{districts[i + 1]["rank"]}. {cutting_district_end(districts[i + 1]["district_name"])} - {districts[i + 1]["voice_count"]}',
-                    callback_data=f"stat_district/{districts[i + 1]['district_id']}")
+                    callback_data=f"stat_district/{int(part_id)}&{districts[i + 1]['district_id']}")
                 )
             btns.append(row)
 
@@ -98,12 +107,10 @@ async def show_district_statistic_inlines(session: AsyncSession):
         print(e)
 
 
-async def show_street_statistic_inlines(session: AsyncSession, district_id: int):
+async def show_street_statistic_inlines(session: AsyncSession, district_id: int, part_id: str):
     try:
-        part_manager = PartManager(session)
-        active_part = await part_manager.get_available_parts()
         voice_manager = VoiceManager(session)
-        streets = await voice_manager.get_street_statistics(active_part.id, district_id)
+        streets = await voice_manager.get_street_statistics(int(part_id), district_id)
 
         btns = []
         for i in range(0, len(streets)):

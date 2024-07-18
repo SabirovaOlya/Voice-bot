@@ -8,7 +8,7 @@ from utils.functions import check_subscription, user_voice_having, user_voice_ac
 from utils.messages import NOT_SUB_MESSAGE
 from components.inlinekeyboards import (show_district_inlines, show_street_inlines,
                                         confirm_voice_keyboard, show_channel_inlines, show_district_statistic_inlines,
-                                        show_street_statistic_inlines)
+                                        show_street_statistic_inlines, statistics_part_select)
 from database.functions import PartManager, StreetManager, VoiceManager, UserManager, DistrictManager
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -162,24 +162,36 @@ async def check_sub(message: Message, session: AsyncSession):
 
 
 @router.message(Command('statistika'))
-async def check_sub(message: Message, session: AsyncSession):
+async def show_statistics(message: Message, session: AsyncSession):
     user_manager = UserManager(session)
     is_admin_status = await user_manager.is_admin(str(message.from_user.id))
     if is_admin_status:
-        await message.answer(text="Статистика (район):", reply_markup=await show_district_statistic_inlines(session))
+        await message.answer(text="Бөлим:", reply_markup=await statistics_part_select())
     else:
         await message.answer("Бундай команда жоқ")
 
 
+@router.callback_query(F.data.startswith('stat_part/'))
+async def show_statistics_parts(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
+    part_id = callback.data.split('/')[-1]
+
+    await state.set_state(Form.selected_street)
+    await callback.message.answer(text=f'Статистика (бөлим - {part_id}):',
+                                  reply_markup=await show_district_statistic_inlines(session, part_id))
+
+
 @router.callback_query(F.data.startswith('stat_district/'))
 async def district_handler(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
-    district_id = callback.data.split('/')[-1]
+    url_data = callback.data.split('/')[-1]
+    part_id = url_data.split('&')[0]
+    district_id = url_data.split('&')[-1]
+
     district_manager = DistrictManager(session)
     selected_district = await district_manager.get_district_by_id(int(district_id))
 
     await state.set_state(Form.selected_street)
     await callback.message.answer(text=f'Статистика ({selected_district.name}):',
-                                  reply_markup=await show_street_statistic_inlines(session, int(district_id)))
+                                  reply_markup=await show_street_statistic_inlines(session, int(district_id), part_id))
 
 
 @router.message(Command('change_role'))
