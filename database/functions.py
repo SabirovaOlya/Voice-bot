@@ -362,6 +362,7 @@ class VoiceManager:
         # Get the count of voices per street within a specific district, ordered by the count in descending order
         result = await self.session.execute(
             select(
+                Street.id,
                 Street.name,
                 func.count(Voice.id).label('voice_count')
             )
@@ -377,9 +378,10 @@ class VoiceManager:
         # Assign ranks to each street
         statistics = []
         for i, row in enumerate(street_rankings):
-            street_name, voice_count = row
+            street_id, street_name, voice_count = row
             rank = i + 1  # Ranking starts from 1
             statistics.append({
+                "id": street_id,
                 "street_name": street_name,
                 "voice_count": voice_count,
                 "rank": rank

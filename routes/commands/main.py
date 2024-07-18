@@ -9,7 +9,7 @@ from utils.messages import NOT_SUB_MESSAGE
 from components.inlinekeyboards import (show_district_inlines, show_street_inlines,
                                         confirm_voice_keyboard, show_channel_inlines, show_district_statistic_inlines,
                                         show_street_statistic_inlines)
-from database.functions import PartManager, StreetManager, VoiceManager, UserManager
+from database.functions import PartManager, StreetManager, VoiceManager, UserManager, DistrictManager
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = Router()
@@ -96,7 +96,7 @@ async def street_handler(callback: CallbackQuery, state: FSMContext, session: As
         await state.update_data(selected_street={"id": selected_street.id, "name": selected_street.name})
         data = await state.get_data()
         await callback.message.answer(
-            text=f"\n\nСайлаған мәҳәллеңиз:: {data['selected_street']['name']}",
+            text=f"\n\nСайлаған мәҳәллеңиз: {data['selected_street']['name']}",
             reply_markup=confirm_voice_keyboard()
         )
     except Exception as e:
@@ -174,8 +174,11 @@ async def check_sub(message: Message, session: AsyncSession):
 @router.callback_query(F.data.startswith('stat_district/'))
 async def district_handler(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
     district_id = callback.data.split('/')[-1]
+    district_manager = DistrictManager(session)
+    selected_district = await district_manager.get_district_by_id(int(district_id))
+
     await state.set_state(Form.selected_street)
-    await callback.message.answer(text='Статистика (мәҳәлле):',
+    await callback.message.answer(text=f'Статистика ({selected_district.name}):',
                                   reply_markup=await show_street_statistic_inlines(session, int(district_id)))
 
 

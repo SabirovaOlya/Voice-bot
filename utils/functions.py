@@ -100,9 +100,9 @@ async def check_actual_subscriptions(session: AsyncSession):
             result = await voice_manager.update_voice_status(voice.user_id, False, voice.part_id)
             print(result)
             await bot.send_message(chat_id=int(user_id),
-                text="Сиз каналлардан ўаз кешкенсыз, сол себеплы сиздың даўысыңыз бийкар етилды.\n\n"
-                     "Даўысыңызды қайта тиклеў ушын /start ни жумысқа тусырың, каналларға жазылыў болың, "
-                     "'Агза болдым' туймесын басыў арқалы жазылыў болғаныңызды тастыйықланг")
+                text="Сиз каналлардан шыққансыз, сол себепли Сизиң берген даўысыңыз бийкар етилди.\n\n"
+                     "Даўысыңызды қайта тиклеў ушын /start ты басып, каналларға қайтадан ағза болың, "
+                     "'Ағза болдым' туймесын басыў арқалы ағзалығыңызды тастыйықлаң!")
 
 
 def cutting_district_end(name: str):
