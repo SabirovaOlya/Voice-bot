@@ -43,13 +43,12 @@ async def show_street_inlines(session: AsyncSession, district_id):
     try:
         street_manager = StreetManager(session)
         voice_manager = VoiceManager(session)
-        all_streets = await voice_manager.get_street_statistics(1, district_id)
+       	all_streets = await voice_manager.get_street_statistics(1, int(district_id))
         streets = all_streets[:3]
-
         btns = []
         for i in range(0, len(streets)):
             row = []
-            row.append(InlineKeyboardButton(text=streets[i].street_name, callback_data=f"street/{streets[i].id}"))
+            row.append(InlineKeyboardButton(text=streets[i]["street_name"], callback_data=f"street/{streets[i]['id']}"))
             # if i + 1 < len(streets):
             #     row.append(
             #         InlineKeyboardButton(text=streets[i + 1].street_name, callback_data=f"street/{streets[i + 1].id}"))
