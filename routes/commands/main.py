@@ -166,7 +166,7 @@ async def show_statistics(message: Message, session: AsyncSession):
     user_manager = UserManager(session)
     is_admin_status = await user_manager.is_admin(str(message.from_user.id))
     if is_admin_status:
-        await message.answer(text="Бөлим:", reply_markup=await statistics_part_select())
+        await message.answer(text="Бөлим:", reply_markup=statistics_part_select())
     else:
         await message.answer("Бундай команда жоқ")
 
